@@ -1,23 +1,38 @@
-import logo from './logo.svg';
-import './App.css';
+import {Outlet,Navigate,Route,Routes,useLocation,Link}from 'react-router-dom' 
+import {Home , Login, Profile, Register, ResetPassword } from "./pages"
+import { useSelector } from 'react-redux';
+
+
+function Layout() {
+
+  // USER AUTHENCTICATON 
+
+const {user} = useSelector(state=>state.user);
+const locatoin = useLocation();
+
+// if user exist then , child component will be rendered else will be navigated to the login page and with a special prop replace  
+return user?.token?(<Outlet/>):(<Navigate to='/login' state={{from : locatoin}} replace/>)
+
+}
 
 function App() {
+  const {theme }= useSelector(state=>state.theme)
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div data-theme={theme} className="w-full min-h-[100vh]">
+     <Routes>
+      <Route element={<Layout/>}>    
+         {/* Home Route  */}
+         <Route path='/' element={<Home/>}></Route>
+         {/* Profile Route */}
+         <Route path='/profile/:id?' element={<Profile/>}></Route>
+      </Route>
+       {/* Register Route */}
+      <Route path='/register' element={<Register/>}></Route>
+      {/* Login Route */}
+      <Route path='/login' element={<Login/>}></Route>
+      {/* ResetPassword Route */}
+      <Route path='/reset-password' element={<ResetPassword/>}></Route>
+     </Routes>
     </div>
   );
 }
